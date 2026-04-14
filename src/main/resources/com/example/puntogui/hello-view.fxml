@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<Pane fx:id="pianoCartesiano" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#getCoords" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.puntogui.HelloController">
+   <children>
+      <Line endX="-44.0" endY="-247.0" layoutX="494.0" layoutY="247.0" startX="-44.0" startY="353.0" />
+      <Line endX="449.0" endY="-1.0" layoutX="451.0" layoutY="301.0" startX="-451.0" startY="-1.0" />
+   </children>
+</Pane>
