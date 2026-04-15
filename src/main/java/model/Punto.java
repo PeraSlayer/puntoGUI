@@ -1,6 +1,10 @@
 package model;
 
-public class Punto {
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+
+public class Punto implements Comparable<Punto>{
 
     double x,y;
 
@@ -30,4 +34,11 @@ public class Punto {
     }
 
 
+    @Override
+    public int compareTo(Punto p) {
+        if (this.x != p.x) {
+            return Double.compare(this.x, p.x);
+        }
+        return Double.compare(this.y, p.y);
+    }
 }
