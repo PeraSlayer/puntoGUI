@@ -1,10 +1,12 @@
 package com.example.puntogui;
 
+import com.almasb.fxgl.physics.PhysicsUnitConverter;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.TextFlow;
 import model.*;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 
 public class HelloController {
     @FXML private Pane root;
+    @FXML private TextFlow LOG_PUNTI;
     private ArrayList<Punto> punti_disegnati = new ArrayList<>();
     private GestionePunti g = new GestionePunti(punti_disegnati);
     private ArrayList<Label> labels = new ArrayList<>();
@@ -21,11 +24,15 @@ public class HelloController {
     @FXML private ArrayList<Line> linee = new ArrayList<>();
     @FXML private ArrayList<Circle> punti_disegnati_media = new ArrayList<>();
     private ArrayList<Punto> punti_media = new ArrayList<>();
+    @FXML private ArrayList<Circle> punti_baricentro_draw = new ArrayList<>();
+     private ArrayList<Punto> punti_baricentro = new ArrayList<>();
 
 
     @FXML
     public void getCoords(@NotNull MouseEvent mouseEvent) {
-        System.out.println("Click ricevuto! X: " + mouseEvent.getX() + " Y: " + mouseEvent.getY()); // <-- AGGIUNGI QUESTO
+        //System.out.println("Click ricevuto! X: " + mouseEvent.getX() + " Y: " + mouseEvent.getY()); // <-- AGGIUNGI QUESTO
+
+        //crea un if per non far sovrapporre i punti
 
         Punto p = new Punto(mouseEvent.getX(), mouseEvent.getY());
         Circle c = new Circle (mouseEvent.getX(), mouseEvent.getY(),4);
@@ -36,7 +43,11 @@ public class HelloController {
         c.toFront();
     }
 
+    @FXML public void undo(){
+        //TODO: torna indietro
+        root.getChildren().remove(punti_disegnati_circle.size()-1);
 
+    }
 
     @FXML
     public void getCoords(double x, double y) {
@@ -49,7 +60,22 @@ public class HelloController {
         root.getChildren().add(c);
         c.toFront();
     }
+/*
+    @FXML
+    public void getCoords(Punto punto) {
+        double x = punto.getX();
+        double y = punto.getY();
 
+        System.out.println("Click ricevuto! X: " +x + " Y: " + y); // <-- AGGIUNGI QUESTO
+        Punto p = new Punto(x, y);
+        Circle c = new Circle (x, y,4);
+        c.setFill(Color.ORANGE);
+        punti_baricentro.add(p);
+        punti_baricentro_draw.add(c);
+        root.getChildren().add(c);
+        c.toFront();
+    }
+*/
 
 
     @FXML
