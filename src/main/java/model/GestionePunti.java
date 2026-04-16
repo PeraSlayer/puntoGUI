@@ -20,7 +20,6 @@ public class GestionePunti implements Comparator<Punto> {
             sumX += p.getX();
             sumY += p.getY();
         }
-        // Restituisce un nuovo punto per evitare di modificare gli originali
 
         return new Punto(sumX / lista.size(), sumY / lista.size());
     }
