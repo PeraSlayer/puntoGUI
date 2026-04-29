@@ -32,13 +32,10 @@
 
         <HBox spacing="20.0" VBox.vgrow="ALWAYS">
             <children>
-                <!-- AREA DI DISEGNO FIXATA -->
                 <Pane fx:id="root" maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" onMouseClicked="#getCoords" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #1C1C1C; -fx-border-color: #a972fc; -fx-border-width: 1;">
                     <children>
-                        <!-- ASSE X: Perfettamente orizzontale a metà altezza (200) -->
                         <Line endX="600.0" endY="200.0" startX="0.0" startY="200.0" stroke="#a972fc" strokeWidth="1.0" />
 
-                        <!-- ASSE Y: Perfettamente verticale a metà larghezza (300) -->
                         <Line endX="300.0" endY="400.0" startX="300.0" startY="0.0" stroke="#a972fc" strokeWidth="1.0" />
                     </children>
                 </Pane>
