@@ -1,11 +1,11 @@
 package com.example.puntogui;
 
-import com.almasb.fxgl.physics.PhysicsUnitConverter;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import model.*;
 import javafx.scene.control.Label;
@@ -15,17 +15,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class HelloController {
-    @FXML private Pane root;
+
+    @FXML private Pane root = new Pane();
     @FXML private TextFlow LOG_PUNTI;
-    private ArrayList<Punto> punti_disegnati = new ArrayList<>();
-    private GestionePunti g = new GestionePunti(punti_disegnati);
-    private ArrayList<Label> labels = new ArrayList<>();
-    @FXML private ArrayList<Circle> punti_disegnati_circle = new ArrayList<>();
-    @FXML private ArrayList<Line> linee = new ArrayList<>();
-    @FXML private ArrayList<Circle> punti_disegnati_media = new ArrayList<>();
-    private ArrayList<Punto> punti_media = new ArrayList<>();
-    @FXML private ArrayList<Circle> punti_baricentro_draw = new ArrayList<>();
-     private ArrayList<Punto> punti_baricentro = new ArrayList<>();
+    private final ArrayList<Punto> punti_disegnati = new ArrayList<>();
+    private final GestionePunti g = new GestionePunti(punti_disegnati);
+    private final ArrayList<Label> labels = new ArrayList<>();
+    private final ArrayList<Circle> punti_disegnati_circle = new ArrayList<>();
+    private final ArrayList<Line> linee = new ArrayList<>();
+    private final ArrayList<Circle> punti_disegnati_media = new ArrayList<>();
+    private final ArrayList<Punto> punti_media = new ArrayList<>();
 
 
     @FXML
@@ -41,42 +40,29 @@ public class HelloController {
         punti_disegnati_circle.add(c);
         root.getChildren().add(c);
         c.toFront();
+
+
+        int larghezza = 300;
+        int altezza = 200;
+        String coordinata = String.format("Punto %d: (%.0f, %.0f)\n", punti_disegnati.size(), mouseEvent.getX()- larghezza, (mouseEvent.getY()- altezza)*-1);
+        Text t = new Text(coordinata);
+        t.setFill(Color.WHITE);
+        LOG_PUNTI.getChildren().add(t);
     }
 
-    @FXML public void undo(){
-        //TODO: torna indietro
-        root.getChildren().remove(punti_disegnati_circle.size()-1);
-
-    }
 
     @FXML
     public void getCoords(double x, double y) {
-        System.out.println("Click ricevuto! X: " + x + " Y: " + y); // <-- AGGIUNGI QUESTO
         Punto p = new Punto(x, y);
-        Circle c = new Circle (x, y,4);
+        Circle c = new Circle(x, y, 4);
         c.setFill(Color.PINK);
+        //if (!((p.getX() == (punti_media.get(punti_media.size() - 1).getX()) && (p.getY() == (punti_media.get(punti_media.size() - 1).getY()))))) {
         punti_media.add(p);
         punti_disegnati_media.add(c);
         root.getChildren().add(c);
         c.toFront();
-    }
-/*
-    @FXML
-    public void getCoords(Punto punto) {
-        double x = punto.getX();
-        double y = punto.getY();
 
-        System.out.println("Click ricevuto! X: " +x + " Y: " + y); // <-- AGGIUNGI QUESTO
-        Punto p = new Punto(x, y);
-        Circle c = new Circle (x, y,4);
-        c.setFill(Color.ORANGE);
-        punti_baricentro.add(p);
-        punti_baricentro_draw.add(c);
-        root.getChildren().add(c);
-        c.toFront();
     }
-*/
-
 
     @FXML
     public void erase(){
@@ -88,7 +74,9 @@ public class HelloController {
         punti_disegnati.clear();
         labels.clear();
         punti_media.clear();
-       root.getChildren().removeAll(punti_disegnati_media);
+        root.getChildren().removeAll(punti_disegnati_media);
+        LOG_PUNTI.getChildren().clear();
+
 
     }
     @FXML
@@ -108,9 +96,9 @@ public class HelloController {
             l.setStartX(s.get(i).getX());
             l.setStartY(s.get(i).getY());
 
-            l.setEndX(s.get((i+1)%s.size()).getX());
+            l.setEndX(s.get((i+1)%s.size()).getX()); // % per collegare l' ultimo al primo
             l.setEndY(s.get((i+1)%s.size()).getY());
-
+            l.setStroke(Color.WHITE);
             linee.add(l);
             root.getChildren().add(l);
         }
@@ -118,6 +106,9 @@ public class HelloController {
 
         for (int i = 0; i < linee.size(); i++) {
             Label label = getLabel(i);
+            label.setTextFill(Color.WHITE);
+
+
             labels.add(label);
             root.getChildren().add(label);
             label.toFront();
@@ -128,6 +119,8 @@ public class HelloController {
             l.toFront();
         }
     }
+
+
 
     @NotNull
     private Label getLabel(int i) {
@@ -143,6 +136,7 @@ public class HelloController {
 
 
         Label label = new Label(String.format("%.2f",lunghezza));
+
 
         label.setLayoutX(media_x);
         label.setLayoutY(media_y);
