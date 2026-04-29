@@ -1,6 +1,8 @@
 package com.example.puntogui;
 
+import javafx.animation.*;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -11,8 +13,14 @@ import model.*;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import org.jetbrains.annotations.NotNull;
+import javafx.util.Duration;
+import javafx.animation.FadeTransition;
+import javafx.animation.SequentialTransition;
+import javafx.util.Duration;
+
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HelloController {
 
@@ -25,6 +33,7 @@ public class HelloController {
     private final ArrayList<Line> linee = new ArrayList<>();
     private final ArrayList<Circle> punti_disegnati_media = new ArrayList<>();
     private final ArrayList<Punto> punti_media = new ArrayList<>();
+    private SequentialTransition sequenzaCorrente;
 
 
     @FXML
@@ -64,23 +73,90 @@ public class HelloController {
 
     }
 
+    // Variabile globale per mantenere e sovrascrivere un'unica istanza
+    private Timeline timelineUnica;
+
+    public void eseguiAnimazioneDisegno() throws InterruptedException {
+        // 1. Ferma e pulisci la vecchia timeline se esiste
+        if (timelineUnica != null) {
+            timelineUnica.stop();
+            timelineUnica.getKeyFrames().clear();
+        }
+
+        timelineUnica = new Timeline();
+
+        // Definiamo i "punti di arrivo" nel tempo per simulare la sequenza
+        double fineLinee = 300;       // Le linee appaiono da 0 a 300ms
+        double finePunti = 500;       // I punti appaiono da 300ms a 500ms
+        double fineLabels = 700;      // Le etichette appaiono da 500ms a 700ms
+
+        // 2. Anima le Linee
+        for (Line l : linee) {
+            l.setOpacity(0);
+            // Va da 0 a 1.0 nei primi 300ms
+            timelineUnica.getKeyFrames().add(
+                    new KeyFrame(Duration.millis(fineLinee), new KeyValue(l.opacityProperty(), 1.0))
+            );
+        }
+
+        // 3. Anima i Punti Medi
+        for (Circle c : punti_disegnati_media) {
+            c.setOpacity(0);
+            // Mantiene l'opacità a 0 fino a 'fineLinee' (300ms), poi sfuma a 1.0 fino a 'finePunti' (500ms)
+            timelineUnica.getKeyFrames().addAll(
+                    new KeyFrame(Duration.millis(fineLinee), new KeyValue(c.opacityProperty(), 0.0)),
+                    new KeyFrame(Duration.millis(finePunti), new KeyValue(c.opacityProperty(), 1.0))
+            );
+        }
+
+        // 4. Anima le Etichette (Labels)
+        for (Label label : labels) {
+            label.setOpacity(0);
+            // Mantiene l'opacità a 0 fino a 'finePunti' (500ms), poi sfuma a 1.0 fino a 'fineLabels' (700ms)
+            timelineUnica.getKeyFrames().addAll(
+                    new KeyFrame(Duration.millis(finePunti), new KeyValue(label.opacityProperty(), 0.0)),
+                    new KeyFrame(Duration.millis(fineLabels), new KeyValue(label.opacityProperty(), 1.0))
+            );
+        }
+
+        // 5. Avvia il motore
+        timelineUnica.play();
+    }
+
+
+
     @FXML
-    public void erase(){
-        root.getChildren().removeAll(linee);
-        root.getChildren().removeAll(punti_disegnati_circle);
-        root.getChildren().removeAll(labels);
+    public void erase() {
+        // Creiamo una lista unica di nodi da animare per la scomparsa
+        List<Node> nodiDaRimuovere = new ArrayList<>();
+        nodiDaRimuovere.addAll(linee);
+        nodiDaRimuovere.addAll(punti_disegnati_circle);
+        nodiDaRimuovere.addAll(labels);
+        nodiDaRimuovere.addAll(punti_disegnati_media);
+
+        for (Node nodo : nodiDaRimuovere) {
+            FadeTransition ft = new FadeTransition(Duration.millis(400), nodo);
+            ft.setFromValue(1.0);
+            ft.setToValue(0.0);
+
+            // Al termine dell'animazione, rimuoviamo fisicamente dal root
+            ft.setOnFinished(e -> root.getChildren().remove(nodo));
+            ft.play();
+        }
+
+        // Pulizia delle liste logiche (immediata)
         linee.clear();
         punti_disegnati_circle.clear();
         punti_disegnati.clear();
         labels.clear();
         punti_media.clear();
-        root.getChildren().removeAll(punti_disegnati_media);
         LOG_PUNTI.getChildren().clear();
-
-
     }
+
+
+
     @FXML
-    public void draw() {
+    public void draw() throws InterruptedException {
         root.getChildren().removeAll(linee);
         root.getChildren().removeAll(labels);
         punti_media.clear();
@@ -118,7 +194,12 @@ public class HelloController {
         for (Line l : linee){
             l.toFront();
         }
+        eseguiAnimazioneDisegno();
     }
+
+
+
+
 
 
 

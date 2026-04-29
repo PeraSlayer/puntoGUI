@@ -68,7 +68,7 @@
                            <effect>
                               <Glow />
                            </effect></JFXButton>
-                                <JFXButton buttonType="RAISED" maxWidth="Infinity" onAction="#erase" prefHeight="40.0" style="-fx-background-color: #FF0033;" text="Pulisci schermo" wrapText="true">
+                                <JFXButton buttonType="RAISED" maxWidth="Infinity" onAction="#erase" prefHeight="40.0" style="-fx-background-color: #cc0033;" text="Pulisci schermo" wrapText="true">
                            <effect>
                               <Glow />
                            </effect></JFXButton>
