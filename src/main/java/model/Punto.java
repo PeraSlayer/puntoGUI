@@ -1,9 +1,5 @@
 package model;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-
 public class Punto implements Comparable<Punto>{
 
     double x,y;

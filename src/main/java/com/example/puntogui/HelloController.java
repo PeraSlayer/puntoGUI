@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import javafx.util.Duration;
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
-import javafx.util.Duration;
+
 
 
 import java.util.ArrayList;
@@ -34,26 +34,23 @@ public class HelloController {
     private final ArrayList<Circle> punti_disegnati_media = new ArrayList<>();
     private final ArrayList<Punto> punti_media = new ArrayList<>();
     private SequentialTransition sequenzaCorrente;
-
+    private final Color violetto = Color.web("#a972fc");
 
     @FXML
     public void getCoords(@NotNull MouseEvent mouseEvent) {
-        //System.out.println("Click ricevuto! X: " + mouseEvent.getX() + " Y: " + mouseEvent.getY()); // <-- AGGIUNGI QUESTO
-
-        //crea un if per non far sovrapporre i punti
-
         Punto p = new Punto(mouseEvent.getX(), mouseEvent.getY());
         Circle c = new Circle (mouseEvent.getX(), mouseEvent.getY(),4);
-        c.setFill(Color.LIGHTSKYBLUE);
+        c.setFill(violetto);
         punti_disegnati.add(p);
         punti_disegnati_circle.add(c);
         root.getChildren().add(c);
         c.toFront();
 
 
-        int larghezza = 300;
-        int altezza = 200;
-        String coordinata = String.format("Punto %d: (%.0f, %.0f)\n", punti_disegnati.size(), mouseEvent.getX()- larghezza, (mouseEvent.getY()- altezza)*-1);
+        int larghezza = 600;
+        int altezza = 400;
+        String coordinata = String.format("Punto %d: (%.0f, %.0f)\n", punti_disegnati.size(),
+                mouseEvent.getX()- (larghezza/2), (mouseEvent.getY()- (altezza/2))*-1);
         Text t = new Text(coordinata);
         t.setFill(Color.WHITE);
         LOG_PUNTI.getChildren().add(t);
@@ -65,7 +62,18 @@ public class HelloController {
         Punto p = new Punto(x, y);
         Circle c = new Circle(x, y, 4);
         c.setFill(Color.PINK);
-        //if (!((p.getX() == (punti_media.get(punti_media.size() - 1).getX()) && (p.getY() == (punti_media.get(punti_media.size() - 1).getY()))))) {
+        punti_media.add(p);
+        punti_disegnati_media.add(c);
+        root.getChildren().add(c);
+        c.toFront();
+
+    }
+
+
+    @FXML
+    public void getCoords(Punto p) {
+        Circle c = new Circle(p.getX(), p.getY(), 4);
+        c.setFill(Color.ORANGE);
         punti_media.add(p);
         punti_disegnati_media.add(c);
         root.getChildren().add(c);
@@ -198,23 +206,18 @@ public class HelloController {
     }
 
 
-
-
-
-
-
     @NotNull
     private Label getLabel(int i) {
-        double x_start = linee.get(i).getStartX();
-        double x_end = linee.get(i).getEndX();
-        double y_start = linee.get(i).getStartY();
-        double y_end = linee.get(i).getEndY();
-        double lunghezza = Math.sqrt(Math.pow(x_start- x_end, 2) + Math.pow(y_start - y_end, 2));
 
-        double media_x = (x_start + x_end)/2;
-        double media_y = (y_start + y_end)/2;
-        getCoords(media_x,media_y);
+        Punto punto1 = new Punto(linee.get(i).getStartX(),linee.get(i).getStartY());
+        Punto punto2 = new Punto(linee.get(i).getEndX(),linee.get(i).getEndY());
 
+        double lunghezza = punto1.GetDistance(punto2);
+
+        double media_x = (punto1.getX() + punto2.getX())/2;
+        double media_y = (punto1.getY() + punto2.getY())/2;
+        Punto puntoMedia = new Punto(media_x,media_y);
+        getCoords(puntoMedia);
 
         Label label = new Label(String.format("%.2f",lunghezza));
 

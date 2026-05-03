@@ -42,7 +42,6 @@ public class GestionePunti implements Comparator<Punto> {
         ArrayList<Punto> star_shaper = punti;
         star_shaper.sort(this);
         return star_shaper;
-
     }
 
 
