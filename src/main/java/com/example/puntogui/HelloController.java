@@ -52,7 +52,7 @@ public class HelloController {
         String coordinata = String.format("Punto %d: (%.0f, %.0f)\n", punti_disegnati.size(),
                 mouseEvent.getX()- (larghezza/2), (mouseEvent.getY()- (altezza/2))*-1);
         Text t = new Text(coordinata);
-        t.setFill(Color.WHITE);
+        t.setFill(Color.BLACK);
         LOG_PUNTI.getChildren().add(t);
     }
 
@@ -182,7 +182,7 @@ public class HelloController {
 
             l.setEndX(s.get((i+1)%s.size()).getX()); // % per collegare l' ultimo al primo
             l.setEndY(s.get((i+1)%s.size()).getY());
-            l.setStroke(Color.WHITE);
+            l.setStroke(Color.BLACK);
             linee.add(l);
             root.getChildren().add(l);
         }
@@ -190,7 +190,7 @@ public class HelloController {
 
         for (int i = 0; i < linee.size(); i++) {
             Label label = getLabel(i);
-            label.setTextFill(Color.WHITE);
+            label.setTextFill(Color.BLACK);
 
 
             labels.add(label);
