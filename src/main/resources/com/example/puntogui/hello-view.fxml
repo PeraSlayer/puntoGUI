@@ -1,80 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
 <?import javafx.geometry.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" spacing="20.0" style="-fx-background-color: #2C2C2C;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.puntogui.HelloController">
+<VBox prefHeight="600.0" prefWidth="900.0" spacing="0.0" style="-fx-background-color: #008080;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.puntogui.HelloController">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
     </padding>
     <children>
-        <Text fill="#a972fc" strokeType="OUTSIDE" strokeWidth="0.0" text="Creatore di Poligoni - Samuele Cervaroli">
-            <font>
-                <Font name="System Bold" size="34.0" />
-            </font>
-         <effect>
-            <Glow />
-         </effect>
-         <cursor>
-            <Cursor fx:constant="DEFAULT" />
-         </cursor>
-        </Text>
-
-        <HBox spacing="20.0" VBox.vgrow="ALWAYS">
+        <!-- BARRA DEL TITOLO STILE WIN95 -->
+        <HBox alignment="CENTER_LEFT" prefHeight="35.0" spacing="10.0" style="-fx-background-color: #000080; -fx-border-color: #FFFFFF #808080 #808080 #FFFFFF; -fx-border-width: 2; -fx-padding: 5;">
             <children>
-                <Pane fx:id="root" maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" onMouseClicked="#getCoords" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #1C1C1C; -fx-border-color: #a972fc; -fx-border-width: 1;">
-                    <children>
-                        <Line endX="600.0" endY="200.0" startX="0.0" startY="200.0" stroke="#a972fc" strokeWidth="1.0" />
+                <Text fill="#FFFFFF" strokeType="OUTSIDE" strokeWidth="0.0" text="Creatore di Poligoni - Samuele Cervaroli">
+                    <font>
+                        <Font name="MS Sans Serif" size="14.0" />
+                    </font>
+                </Text>
+            </children>
+        </HBox>
 
-                        <Line endX="300.0" endY="400.0" startX="300.0" startY="0.0" stroke="#a972fc" strokeWidth="1.0" />
-                    </children>
-                </Pane>
+        <!-- MENU BAR STILE WIN95 -->
+        <MenuBar style="-fx-background-color: #C0C0C0; -fx-border-color: #FFFFFF #808080 #808080 #FFFFFF; -fx-border-width: 1; -fx-padding: 2;">
+            <menus>
+                <Menu style="-fx-text-fill: #000000;" text="File">
+                    <items>
+                        <MenuItem onAction="#erase" text="Nuovo" />
+                        <MenuItem text="Apri" />
+                        <MenuItem text="Salva" />
+                        <SeparatorMenuItem />
+                        <MenuItem text="Esci" />
+                    </items>
+                </Menu>
+                <Menu style="-fx-text-fill: #000000;" text="Modifica">
+                    <items>
+                        <MenuItem text="Taglia" />
+                        <MenuItem text="Copia" />
+                        <MenuItem text="Incolla" />
+                    </items>
+                </Menu>
+                <Menu style="-fx-text-fill: #000000;" text="Aiuto">
+                    <items>
+                        <MenuItem text="Informazioni" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
 
-                <!-- SIDEBAR -->
-                <VBox prefWidth="250.0" spacing="15.0">
+        <HBox spacing="0.0" style="-fx-background-color: #C0C0C0; -fx-border-color: #FFFFFF #808080 #808080 #FFFFFF; -fx-border-width: 2; -fx-padding: 5;" VBox.vgrow="ALWAYS">
+            <children>
+                <!-- AREA DISEGNO STILE WIN95 -->
+                <VBox spacing="2.0">
                     <children>
-                        <Text fill="#a972fc" strokeType="OUTSIDE" strokeWidth="0.0" text="Log Coordinate:" textAlignment="CENTER" wrappingWidth="240.0">
-                            <font>
-                                <Font name="System Bold" size="20.0" />
-                            </font>
-                     <effect>
-                        <Glow />
-                     </effect>
-                        </Text>
-                        <ScrollPane fitToWidth="true" style="-fx-background-color: #2C2C2C; -fx-border-color: #a972fc;" VBox.vgrow="ALWAYS">
-                            <content>
-                                <TextFlow fx:id="LOG_PUNTI" prefHeight="351.0" prefWidth="236.0" style="-fx-padding: 10; -fx-background-color: #2C2C2C;">
-                           <effect>
-                              <Glow />
-                           </effect></TextFlow>
-                            </content>
-                     <effect>
-                        <Glow />
-                     </effect>
-                        </ScrollPane>
-                        <VBox spacing="10.0">
+                        <Label style="-fx-text-fill: #000000; -fx-font-family: 'MS Sans Serif'; -fx-font-size: 11px;" text="Area di disegno:" />
+                        <Pane fx:id="root" maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" onMouseClicked="#getCoords" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #808080 #FFFFFF #FFFFFF #808080; -fx-border-width: 2;">
                             <children>
-                                <JFXButton buttonType="RAISED" maxWidth="Infinity" onAction="#draw" prefHeight="40.0" style="-fx-background-color: #00FF85;" text="Disegna Linee">
-                           <effect>
-                              <Glow />
-                           </effect></JFXButton>
-                                <JFXButton buttonType="RAISED" maxWidth="Infinity" onAction="#erase" prefHeight="40.0" style="-fx-background-color: #cc0033;" text="Pulisci schermo" textFill="WHITE" wrapText="true">
-                           <effect>
-                              <Glow />
-                           </effect></JFXButton>
+                                <!-- LINEA ORIZZONTALE -->
+                                <Line endX="600.0" endY="200.0" startX="0.0" startY="200.0" stroke="#C0C0C0" strokeWidth="1.0" />
+
+                                <!-- LINEA VERTICALE -->
+                                <Line endX="300.0" endY="400.0" startX="300.0" startY="0.0" stroke="#C0C0C0" strokeWidth="1.0" />
+                            </children>
+                        </Pane>
+                        <Label style="-fx-text-fill: #000000; -fx-font-family: 'MS Sans Serif'; -fx-font-size: 11px;" text="Clicca per aggiungere punti" />
+                    </children>
+                </VBox>
+
+                <!-- SIDEBAR STILE WIN95 -->
+                <VBox prefWidth="250.0" spacing="5.0" style="-fx-background-color: #C0C0C0; -fx-border-color: #FFFFFF #808080 #808080 #FFFFFF; -fx-border-width: 2; -fx-padding: 5;">
+                    <children>
+                        <!-- QUADRATO LOG STILE WIN95 -->
+                        <TitledPane animated="false" collapsible="false" style="-fx-font-family: 'MS Sans Serif'; -fx-font-size: 11px;" text="Log Coordinate:" VBox.vgrow="ALWAYS">
+                            <content>
+                                <ScrollPane fitToWidth="true" style="-fx-background-color: #FFFFFF; -fx-border-color: #808080 #FFFFFF #FFFFFF #808080; -fx-border-width: 2;" VBox.vgrow="ALWAYS">
+                                    <content>
+                                        <TextFlow fx:id="LOG_PUNTI" prefHeight="300.0" prefWidth="220.0" style="-fx-padding: 3; -fx-background-color: #FFFFFF;">
+                                        </TextFlow>
+                                    </content>
+                                </ScrollPane>
+                            </content>
+                        </TitledPane>
+
+                        <!-- PULSANTI STILE WIN95 -->
+                        <VBox spacing="5.0">
+                            <children>
+                                <Button maxWidth="Infinity" onAction="#draw" prefHeight="30.0" style="-fx-background-color: #C0C0C0; -fx-border-color: #FFFFFF #808080 #808080 #FFFFFF; -fx-border-width: 2; -fx-font-family: 'MS Sans Serif'; -fx-font-size: 11px; -fx-text-fill: #000000; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" text="Disegna Linee">
+                                </Button>
+                                <Button maxWidth="Infinity" onAction="#erase" prefHeight="30.0" style="-fx-background-color: #C0C0C0; -fx-border-color: #FFFFFF #808080 #808080 #FFFFFF; -fx-border-width: 2; -fx-font-family: 'MS Sans Serif'; -fx-font-size: 11px; -fx-text-fill: #000000; -fx-wrap-text: true;" text="Pulisci schermo" textFill="BLACK">
+                                </Button>
                             </children>
                         </VBox>
                     </children>
-               <effect>
-                  <Glow />
-               </effect>
                 </VBox>
+            </children>
+        </HBox>
+
+        <!-- BARRA DI STATO STILE WIN95 -->
+        <HBox alignment="CENTER_LEFT" prefHeight="25.0" spacing="20.0" style="-fx-background-color: #C0C0C0; -fx-border-color: #808080 #FFFFFF #FFFFFF #808080; -fx-border-width: 2; -fx-padding: 3;">
+            <children>
+                <Label style="-fx-text-fill: #000000; -fx-font-family: 'MS Sans Serif'; -fx-font-size: 11px;" text="Pronto" />
+                <Pane HBox.hgrow="ALWAYS" />
+                <Label style="-fx-text-fill: #000000; -fx-font-family: 'MS Sans Serif'; -fx-font-size: 11px;" text="NUM" />
             </children>
         </HBox>
     </children>
