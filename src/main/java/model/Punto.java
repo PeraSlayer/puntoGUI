@@ -1,6 +1,8 @@
 package model;
 
-public class Punto implements Comparable<Punto>{
+import java.io.Serializable;
+
+public class Punto implements Comparable<Punto>, Serializable {
 
     double x,y;
 

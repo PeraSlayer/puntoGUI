@@ -3,22 +3,25 @@ package com.example.puntogui;
 import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.FileChooser;
 import model.*;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import org.jetbrains.annotations.NotNull;
 import javafx.util.Duration;
 import javafx.animation.FadeTransition;
-import javafx.animation.SequentialTransition;
 
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +30,12 @@ public class HelloController {
     @FXML private Pane root = new Pane();
     @FXML private TextFlow LOG_PUNTI;
     private final ArrayList<Punto> punti_disegnati = new ArrayList<>();
-    private final GestionePunti g = new GestionePunti(punti_disegnati);
+    private GestionePunti g = new GestionePunti(punti_disegnati);
     private final ArrayList<Label> labels = new ArrayList<>();
     private final ArrayList<Circle> punti_disegnati_circle = new ArrayList<>();
     private final ArrayList<Line> linee = new ArrayList<>();
     private final ArrayList<Circle> punti_disegnati_media = new ArrayList<>();
     private final ArrayList<Punto> punti_media = new ArrayList<>();
-    private SequentialTransition sequenzaCorrente;
     private final Color violetto = Color.web("#a972fc");
 
     @FXML
@@ -52,22 +54,12 @@ public class HelloController {
         String coordinata = String.format("Punto %d: (%.0f, %.0f)\n", punti_disegnati.size(),
                 mouseEvent.getX()- (larghezza/2), (mouseEvent.getY()- (altezza/2))*-1);
         Text t = new Text(coordinata);
-        t.setFill(Color.BLACK);
+        t.setFill(Color.WHITE);
         LOG_PUNTI.getChildren().add(t);
     }
 
 
-    @FXML
-    public void getCoords(double x, double y) {
-        Punto p = new Punto(x, y);
-        Circle c = new Circle(x, y, 4);
-        c.setFill(Color.PINK);
-        punti_media.add(p);
-        punti_disegnati_media.add(c);
-        root.getChildren().add(c);
-        c.toFront();
 
-    }
 
 
     @FXML
@@ -182,7 +174,7 @@ public class HelloController {
 
             l.setEndX(s.get((i+1)%s.size()).getX()); // % per collegare l' ultimo al primo
             l.setEndY(s.get((i+1)%s.size()).getY());
-            l.setStroke(Color.BLACK);
+            l.setStroke(Color.WHITE);
             linee.add(l);
             root.getChildren().add(l);
         }
@@ -190,7 +182,7 @@ public class HelloController {
 
         for (int i = 0; i < linee.size(); i++) {
             Label label = getLabel(i);
-            label.setTextFill(Color.BLACK);
+            label.setTextFill(Color.WHITE);
 
 
             labels.add(label);
@@ -227,4 +219,138 @@ public class HelloController {
 
         return label;
     }
+
+    @FXML
+    public void esportaPunti() {
+        if (punti_disegnati.isEmpty()) {
+            mostraAvviso("Nessun punto", "Non ci sono punti da esportare.");
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Esporta punti");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("File Punti (*.pera)", "*.pera")
+        );
+        fileChooser.setInitialFileName("punti.pera");
+
+        File file = fileChooser.showSaveDialog(root.getScene().getWindow());
+
+        if (file != null) {
+            try {
+                // Crea un GestionePunti con lo stato corrente
+                GestionePunti gp = new GestionePunti(new ArrayList<>(punti_disegnati));
+                gp.esporta(file);
+                mostraInfo("Esportazione completata",
+                        "Punti esportati con successo in:\n" + file.getAbsolutePath());
+            } catch (IOException e) {
+                mostraErrore("Errore esportazione",
+                        "Impossibile salvare il file:\n" + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    public void importaPunti() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Importa punti");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("File Punti (*.pera)", "*.pera")
+        );
+
+        File file = fileChooser.showOpenDialog(root.getScene().getWindow());
+
+        if (file != null) {
+            try {
+                // Ferma animazioni in corso
+                if (timelineUnica != null) {
+                    timelineUnica.stop();
+                }
+
+                // Pulisci lo stato corrente
+                eraseImmediato();
+
+                // Importa i nuovi punti
+                ArrayList<Punto> puntiImportati = g.importa(file);
+
+                // Ricostruisci l'interfaccia grafica
+                for (Punto p : puntiImportati) {
+                    punti_disegnati.add(p);
+
+                    Circle c = new Circle(p.getX(), p.getY(), 4);
+                    c.setFill(violetto);
+                    punti_disegnati_circle.add(c);
+                    root.getChildren().add(c);
+                    c.toFront();
+
+                    // Aggiorna il log
+                    int larghezza = 600;
+                    int altezza = 400;
+                    String coordinata = String.format("Punto %d: (%.0f, %.0f)\n",
+                            punti_disegnati.size(),
+                            p.getX() - (larghezza / 2),
+                            (p.getY() - (altezza / 2)) * -1);
+                    Text t = new Text(coordinata);
+                    t.setFill(Color.WHITE);
+                    LOG_PUNTI.getChildren().add(t);
+                }
+
+                // Aggiorna il gestore punti
+                g = new GestionePunti(punti_disegnati);
+
+                mostraInfo("Importazione completata",
+                        "Importati " + puntiImportati.size() + " punti con successo.");
+
+            } catch (IOException | ClassNotFoundException e) {
+                mostraErrore("Errore importazione",
+                        "Impossibile leggere il file:\n" + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // Metodo di pulizia immediata (senza animazioni)
+    private void eraseImmediato() {
+        root.getChildren().removeAll(linee);
+        root.getChildren().removeAll(punti_disegnati_circle);
+        root.getChildren().removeAll(labels);
+        root.getChildren().removeAll(punti_disegnati_media);
+
+        linee.clear();
+        punti_disegnati_circle.clear();
+        punti_disegnati.clear();
+        labels.clear();
+        punti_disegnati_media.clear();
+        punti_media.clear();
+        LOG_PUNTI.getChildren().clear();
+
+        g = new GestionePunti(punti_disegnati);
+    }
+
+    // Metodi utility per i dialoghi
+    private void mostraAvviso(String titolo, String messaggio) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(titolo);
+        alert.setHeaderText(null);
+        alert.setContentText(messaggio);
+        alert.showAndWait();
+    }
+
+    private void mostraInfo(String titolo, String messaggio) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titolo);
+        alert.setHeaderText(null);
+        alert.setContentText(messaggio);
+        alert.showAndWait();
+    }
+
+    private void mostraErrore(String titolo, String messaggio) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(titolo);
+        alert.setHeaderText(null);
+        alert.setContentText(messaggio);
+        alert.showAndWait();
+    }
+
 }

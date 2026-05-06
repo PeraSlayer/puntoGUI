@@ -1,10 +1,11 @@
 package model;
 
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class GestionePunti implements Comparator<Punto> {
+public class GestionePunti implements Comparator<Punto>, Serializable {
 
     private ArrayList<Punto> puntos = new ArrayList<>();
     private  Punto baricentro;
@@ -43,6 +44,28 @@ public class GestionePunti implements Comparator<Punto> {
         star_shaper.sort(this);
         return star_shaper;
     }
+
+
+    public ArrayList<Punto> importa(File file) throws IOException, ClassNotFoundException, IOException {
+        try (ObjectInputStream ois = new ObjectInputStream(
+                new FileInputStream(file))) {
+
+            @SuppressWarnings("unchecked")
+            ArrayList<Punto> puntiImportati = (ArrayList<Punto>) ois.readObject();
+
+            return puntiImportati;
+        }
+    }
+
+    public void esporta(File file) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream(file))) {
+            oos.writeObject(puntos);
+            oos.writeObject(baricentro);
+        }
+    }
+
+
 
 
 }
